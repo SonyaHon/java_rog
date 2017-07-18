@@ -2,6 +2,8 @@ package rog.Screen;
 
 import asciiPanel.AsciiFont;
 import asciiPanel.AsciiPanel;
+import rog.Entitys.Entity;
+import rog.Game.Glyph;
 import rog.Game.Tile;
 import rog.Maps.LocalMapData;
 
@@ -19,7 +21,7 @@ public class DisplayManager extends JFrame{
         this.setSize(800, 600);
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
         this.setResizable(false);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         Container container = this.getContentPane();
 
         container.setBackground(new Color(66,66,66));
@@ -44,8 +46,17 @@ public class DisplayManager extends JFrame{
         terminal.repaint();
     }
 
+    public void drawGlyph(int x, int y, Glyph gl) {
+        terminal.write(gl.getChar(), x, y, gl.getForeground(), gl.getBackground());
+    }
+
     public void drawTile(Tile tl) {
         terminal.write(tl.getChar(), tl.getX(), tl.getY(), tl.getForeground(), tl.getBackground());
+    }
+
+    public void drawEntity(Entity en) {
+        Glyph gl = en.getGlyph();
+        this.drawGlyph(en.getX(), en.getY(), gl);
     }
 
     public void drawMap(LocalMapData map) {
@@ -54,6 +65,12 @@ public class DisplayManager extends JFrame{
                 drawTile(map.getMap()[x][y]);
             }
         }
+
+        for(int i = 0; i < map.getEnitiesList().size(); i++) {
+            this.drawEntity(map.getEnitiesList().get(i));
+        }
+
+        this.drawEntity(map.getPlayer());
     }
 
     public int getScreenWidth() {
